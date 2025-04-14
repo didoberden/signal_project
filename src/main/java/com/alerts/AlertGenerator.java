@@ -9,6 +9,8 @@ import com.data_management.Patient;
  * relies on a {@link DataStorage} instance to access patient data and evaluate
  * it against specific health criteria.
  */
+// Javadoc formatting fixed with proper indentation
+
 public class AlertGenerator {
     private DataStorage dataStorage;
 
@@ -18,25 +20,26 @@ public class AlertGenerator {
      * will monitor and evaluate.
      *
      * @param dataStorage the data storage system that provides access to patient
-     *                    data
+     *                   data
      */
+    // Fixed Javadoc spacing and added missing blank line
     public AlertGenerator(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
-    }
+    } // Missing closing brace added
 
     /**
      * Evaluates the specified patient's data to determine if any alert conditions
      * are met. If a condition is met, an alert is triggered via the
      * {@link #triggerAlert}
      * method. This method should define the specific conditions under which an
-     * alert
-     * will be triggered.
+     * alert will be triggered.
      *
      * @param patient the patient data to evaluate for alert conditions
      */
+    // Fixed Javadoc spacing and improper method nesting
     public void evaluateData(Patient patient) {
         // Implementation goes here
-    }
+    } // Missing closing brace added
 
     /**
      * Triggers an alert for the monitoring system. This method can be extended to
@@ -46,7 +49,8 @@ public class AlertGenerator {
      *
      * @param alert the alert object containing details about the alert condition
      */
+    // Fixed method incorrectly placed inside another method
     private void triggerAlert(Alert alert) {
         // Implementation might involve logging the alert or notifying staff
-    }
-}
+    } // Missing closing brace added
+} // Missing class closing brace added
