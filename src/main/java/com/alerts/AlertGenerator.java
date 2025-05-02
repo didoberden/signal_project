@@ -71,12 +71,52 @@ public class AlertGenerator {
         // Get the records for each vital sign and update history
         updatePatientHistory(patient);
         
+        // Get latest data from data storage to ensure we have the most up-to-date information
+        long currentTime = System.currentTimeMillis();
+        long twentyFourHoursAgo = currentTime - (24 * 60 * 60 * 1000);
+        List<PatientRecord> recentStorageRecords = dataStorage.getRecords(patientId, twentyFourHoursAgo, currentTime);
+        
+        // Also add the records from storage to our history
+        if (!recentStorageRecords.isEmpty()) {
+            for (PatientRecord record : recentStorageRecords) {
+                String recordType = record.getRecordType();
+                
+                if (!patientRecordHistory.get(patientId).containsKey(recordType)) {
+                    patientRecordHistory.get(patientId).put(recordType, new ArrayList<>());
+                }
+                
+                List<PatientRecord> typeHistory = patientRecordHistory.get(patientId).get(recordType);
+                
+                // Check if record already exists in history
+                boolean exists = typeHistory.stream()
+                    .anyMatch(r -> r.getTimestamp() == record.getTimestamp());
+                    
+                if (!exists) {
+                    typeHistory.add(record);
+                }
+            }
+            
+            // Re-sort all record types by timestamp after adding storage records
+            for (String recordType : patientRecordHistory.get(patientId).keySet()) {
+                patientRecordHistory.get(patientId).get(recordType).sort(
+                    Comparator.comparingLong(PatientRecord::getTimestamp)
+                );
+            }
+        }
+        
         // Process each type of alert
         checkBloodPressureAlerts(patientId);
         checkOxygenSaturationAlerts(patientId);
         checkCombinedAlerts(patientId);
         checkECGAlerts(patientId);
         checkManuallyTriggeredAlerts(patientId);
+        
+        // Print a summary of active alerts for the patient
+        Map<AlertType, Alert> patientAlerts = activeAlerts.get(patientId);
+        if (patientAlerts != null && !patientAlerts.isEmpty()) {
+            System.out.println("Patient #" + patientId + " has " + patientAlerts.size() + 
+                              " active alert(s): " + patientAlerts.keySet());
+        }
     }
     
     /**
