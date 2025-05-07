@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Runs the health data simulation for all patients.
+ * Implemented as a Singleton to ensure a single global instance.
  */
 public class HealthDataSimulator {
 
@@ -23,6 +24,28 @@ public class HealthDataSimulator {
     private static ScheduledExecutorService scheduler;
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy();
     private static final Random random = new Random();
+    
+    // Singleton instance
+    private static HealthDataSimulator instance;
+    
+    /**
+     * Private constructor for Singleton pattern.
+     */
+    private HealthDataSimulator() {
+        // Private constructor for singleton
+    }
+    
+    /**
+     * Gets the singleton instance of HealthDataSimulator.
+     *
+     * @return the singleton instance
+     */
+    public static synchronized HealthDataSimulator getInstance() {
+        if (instance == null) {
+            instance = new HealthDataSimulator();
+        }
+        return instance;
+    }
 
     /**
      * Starts the simulator, parses args, and schedules data generation.
@@ -31,6 +54,9 @@ public class HealthDataSimulator {
      * @throws IOException if output directory can't be created
      */
     public static void main(String[] args) throws IOException {
+        // Get the singleton instance (optional here since we're using static methods)
+        HealthDataSimulator simulator = HealthDataSimulator.getInstance();
+        
         parseArguments(args);
         scheduler = Executors.newScheduledThreadPool(patientCount * 4);
         List<Integer> patientIds = initializePatientIds(patientCount);

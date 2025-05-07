@@ -25,7 +25,7 @@ public class AlertGeneratorTest {
     @BeforeEach
     public void setup() {
         // Create test objects
-        dataStorage = new DataStorage();
+        dataStorage = DataStorage.getInstance();
         alertGenerator = new AlertGenerator(dataStorage);
         patient = new Patient(PATIENT_ID);
     }

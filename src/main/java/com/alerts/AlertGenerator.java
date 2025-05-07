@@ -5,6 +5,7 @@ import java.util.*;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
+import com.alerts.factory.AlertFactory;
 
 /**
  * The {@code AlertGenerator} class is responsible for monitoring patient data
@@ -182,13 +183,9 @@ public class AlertGenerator {
             
             // Critical high systolic BP
             if (systolicValue >= HIGH_SYSTOLIC_BP_THRESHOLD) {
-                triggerAlert(new Alert(
-                    patientId,
-                    AlertType.HIGH_SYSTOLIC_BP,
-                    "Critical high systolic blood pressure: " + systolicValue + " mmHg",
-                    timestamp,
-                    AlertSeverity.CRITICAL
-                ));
+                AlertFactory factory = AlertFactory.getFactory("bloodpressure");
+                Alert alert = factory.createAlert(patientId, "high_systolic", timestamp, systolicValue);
+                triggerAlert(alert);
             } else {
                 resolveAlert(patientId, AlertType.HIGH_SYSTOLIC_BP);
             }
@@ -330,13 +327,9 @@ public class AlertGenerator {
             
             // Low oxygen saturation alert
             if (oxygenValue < LOW_OXYGEN_THRESHOLD) {
-                triggerAlert(new Alert(
-                    patientId,
-                    AlertType.LOW_OXYGEN_SATURATION,
-                    "Low oxygen saturation: " + oxygenValue + "%",
-                    timestamp,
-                    AlertSeverity.HIGH
-                ));
+                AlertFactory factory = AlertFactory.getFactory("bloodoxygen");
+                Alert alert = factory.createAlert(patientId, "low_saturation", timestamp, oxygenValue);
+                triggerAlert(alert);
             } else {
                 resolveAlert(patientId, AlertType.LOW_OXYGEN_SATURATION);
             }
@@ -458,14 +451,9 @@ public class AlertGenerator {
             double latestValue = latest.getMeasurementValue();
             
             if (Math.abs(latestValue - mean) > ECG_ABNORMAL_THRESHOLD * stdDev) {
-                triggerAlert(new Alert(
-                    patientId,
-                    AlertType.ECG_ABNORMAL_PEAK,
-                    "Abnormal ECG peak detected: " + latestValue + " (exceeds " + 
-                        ECG_ABNORMAL_THRESHOLD + " standard deviations from mean)",
-                    latest.getTimestamp(),
-                    AlertSeverity.HIGH
-                ));
+                AlertFactory factory = AlertFactory.getFactory("ecg");
+                Alert alert = factory.createAlert(patientId, "abnormal_peak", latest.getTimestamp(), latestValue);
+                triggerAlert(alert);
             } else {
                 resolveAlert(patientId, AlertType.ECG_ABNORMAL_PEAK);
             }

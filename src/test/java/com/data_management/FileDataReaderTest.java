@@ -28,7 +28,7 @@ public class FileDataReaderTest {
         writer.close();
         
         // Create data storage to collect data
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         
         // Create reader
         FileDataReader reader = new FileDataReader(tempDir.toString());
@@ -44,7 +44,7 @@ public class FileDataReaderTest {
     public void testEmptyDirectory() throws IOException {
         // Create reader with empty dir
         FileDataReader reader = new FileDataReader(tempDir.toString());
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         
         // This should not throw exception
         reader.readData(storage);
@@ -60,7 +60,7 @@ public class FileDataReaderTest {
         
         // Create reader and storage
         FileDataReader reader = new FileDataReader(tempDir.toString());
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         
         // This should not throw exception
         reader.readData(storage);
@@ -72,7 +72,7 @@ public class FileDataReaderTest {
     public void testDirectoryNotFound() {
         // Create reader with nonexistent directory
         FileDataReader reader = new FileDataReader("C:/this/does/not/exist");
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         
         // Should throw exception
         try {
